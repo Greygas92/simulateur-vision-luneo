@@ -1,0 +1,241 @@
+:root {
+  color-scheme: dark;
+  --bg: #050914;
+  --bg-2: #0c1830;
+  --panel: rgba(14, 23, 43, 0.8);
+  --panel-border: rgba(112, 153, 230, 0.26);
+  --text: #edf3ff;
+  --muted: #9cb3db;
+  --accent: #6dc1ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: radial-gradient(circle at 20% 10%, #102247, var(--bg));
+  color: var(--text);
+  min-height: 100vh;
+  position: relative;
+}
+
+.bg-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 82% 20%, rgba(54, 127, 255, 0.22), transparent 42%), radial-gradient(circle at 14% 76%, rgba(119, 56, 255, 0.16), transparent 36%);
+}
+
+.topbar,
+footer {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 1.1rem 1.4rem;
+  position: relative;
+  z-index: 1;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.kicker {
+  margin: 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #8ab8ff;
+}
+
+.topbar h1 {
+  margin: 0.2rem 0 0;
+  font-size: clamp(1.3rem, 2.2vw, 2.1rem);
+}
+
+.topbar p,
+footer p {
+  margin: 0.38rem 0 0;
+  color: var(--muted);
+}
+
+.badge {
+  border: 1px solid rgba(135, 200, 255, 0.55);
+  background: rgba(38, 86, 157, 0.26);
+  color: #d4ebff;
+  border-radius: 999px;
+  padding: 0.3rem 0.68rem;
+  font-size: 0.77rem;
+  white-space: nowrap;
+}
+
+.layout {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 1.4rem 2.2rem;
+  display: grid;
+  grid-template-columns: minmax(290px, 370px) 1fr;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.panel {
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  backdrop-filter: blur(14px);
+  border-radius: 20px;
+  padding: 1rem;
+  box-shadow: inset 0 1px 0 rgba(203, 228, 255, 0.08), 0 18px 42px rgba(0, 0, 0, 0.38);
+}
+
+.controls h2,
+.viewer h2 {
+  margin: 0 0 1rem;
+  font-size: 1.04rem;
+}
+
+.control-group {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.86rem;
+}
+
+.control-group label {
+  grid-column: 1 / -1;
+  font-size: 0.89rem;
+  color: var(--muted);
+}
+
+input[type='range'],
+select {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+select,
+button,
+.file-label {
+  font: inherit;
+}
+
+select {
+  background: rgba(5, 15, 36, 0.95);
+  color: var(--text);
+  border: 1px solid rgba(89, 126, 196, 0.85);
+  border-radius: 10px;
+  padding: 0.45rem;
+}
+
+output {
+  min-width: 3.8rem;
+  text-align: right;
+  color: #88d3ff;
+  font-variant-numeric: tabular-nums;
+}
+
+.actions {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+button,
+.file-label {
+  background: linear-gradient(180deg, rgba(52, 90, 158, 0.66), rgba(25, 48, 90, 0.84));
+  color: var(--text);
+  border: 1px solid rgba(106, 161, 245, 0.75);
+  border-radius: 11px;
+  padding: 0.62rem 0.85rem;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+button:hover,
+.file-label:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(13, 41, 84, 0.4);
+}
+
+#imageUpload {
+  display: none;
+}
+
+.viewer-header small {
+  color: var(--muted);
+}
+
+.canvas-wrap {
+  margin-top: 0.8rem;
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(103, 157, 255, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(197, 226, 255, 0.1), 0 16px 34px rgba(2, 8, 20, 0.5);
+}
+
+.canvas-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.09), transparent 34%, transparent 67%, rgba(255, 255, 255, 0.05));
+}
+
+canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+#sourceCanvas {
+  display: none;
+}
+
+.legend {
+  margin-top: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.dot {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  margin-right: 0.35rem;
+}
+
+.dot.far {
+  background: #2fd7ff;
+}
+
+.dot.inter {
+  background: #ffd166;
+}
+
+.dot.near {
+  background: #ff4d7f;
+}
+
+@media (max-width: 980px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
