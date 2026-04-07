@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vision Progressive Lab</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>Vision Progressive Lab</h1>
+      <p>Simulateur interactif des déformations perçues avec des verres progressifs.</p>
+    </header>
+
+    <main class="layout">
+      <section class="panel controls">
+        <h2>Réglages</h2>
+
+        <div class="control-group">
+          <label for="mode">Mode de simulation</label>
+          <select id="mode">
+            <option value="newWearer">Nouveau porteur (adaptation difficile)</option>
+            <option value="adapted">Porteur adapté</option>
+            <option value="custom">Personnalisé</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="corridor">Longueur du couloir progressif</label>
+          <input id="corridor" type="range" min="0.2" max="1" step="0.01" value="0.58" />
+          <output id="corridorValue"></output>
+        </div>
+
+        <div class="control-group">
+          <label for="power">Écart de puissance (ADD)</label>
+          <input id="power" type="range" min="0" max="1" step="0.01" value="0.66" />
+          <output id="powerValue"></output>
+        </div>
+
+        <div class="control-group">
+          <label for="swim">Effet de tangage / « swim effect »</label>
+          <input id="swim" type="range" min="0" max="1" step="0.01" value="0.42" />
+          <output id="swimValue"></output>
+        </div>
+
+        <div class="control-group">
+          <label for="blur">Flou périphérique</label>
+          <input id="blur" type="range" min="0" max="1" step="0.01" value="0.45" />
+          <output id="blurValue"></output>
+        </div>
+
+        <div class="control-group">
+          <label for="chromatic">Aberration chromatique</label>
+          <input id="chromatic" type="range" min="0" max="1" step="0.01" value="0.23" />
+          <output id="chromaticValue"></output>
+        </div>
+
+        <div class="control-group">
+          <label for="headTilt">Inclinaison de la tête</label>
+          <input id="headTilt" type="range" min="-1" max="1" step="0.01" value="0" />
+          <output id="headTiltValue"></output>
+        </div>
+
+        <div class="actions">
+          <button id="toggleGrid">Afficher/Masquer grille</button>
+          <button id="loadDemo">Charger une scène démo</button>
+          <label class="file-label" for="imageUpload">Importer une image</label>
+          <input id="imageUpload" type="file" accept="image/*" />
+        </div>
+      </section>
+
+      <section class="panel viewer">
+        <div class="viewer-header">
+          <h2>Rendu en condition réelle</h2>
+          <small>Conseil: utilisez une photo d’intérieur (rayons, escaliers, voiture) pour mieux voir les zones de déformation.</small>
+        </div>
+
+        <div class="canvas-wrap">
+          <canvas id="sourceCanvas" width="960" height="540"></canvas>
+          <canvas id="renderCanvas" width="960" height="540"></canvas>
+        </div>
+
+        <div class="legend">
+          <span><i class="dot far"></i> Vision de loin</span>
+          <span><i class="dot inter"></i> Vision intermédiaire</span>
+          <span><i class="dot near"></i> Vision de près</span>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        Ce simulateur est pédagogique: il reproduit les phénomènes de déformation, d’astigmatisme latéral et de changement de netteté.
+      </p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
