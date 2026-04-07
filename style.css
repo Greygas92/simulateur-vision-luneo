@@ -1,5 +1,11 @@
 :root {
   color-scheme: dark;
+  --bg: #050914;
+  --panel: rgba(14, 23, 43, 0.84);
+  --panel-border: rgba(112, 153, 230, 0.28);
+  --text: #edf3ff;
+  --muted: #9cb3db;
+  --accent: #6dc1ff;
   --bg: #0a0f1c;
   --panel: #111a2f;
   --panel-border: #1f2f52;
@@ -15,11 +21,46 @@
 body {
   margin: 0;
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: radial-gradient(circle at 20% 10%, #102247, var(--bg));
   background: radial-gradient(circle at 20% 10%, #0f1a34, var(--bg));
   color: var(--text);
   min-height: 100vh;
 }
 
+.bg-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 82% 20%, rgba(54, 127, 255, 0.22), transparent 42%), radial-gradient(circle at 14% 76%, rgba(119, 56, 255, 0.15), transparent 36%);
+}
+
+.topbar,
+footer {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 1.1rem 1.4rem;
+  position: relative;
+  z-index: 1;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.kicker {
+  margin: 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #8ab8ff;
+}
+
+.topbar h1 {
+  margin: 0.2rem 0 0;
+  font-size: clamp(1.3rem, 2.2vw, 2.1rem);
 .topbar,
 footer {
   max-width: 1300px;
@@ -34,6 +75,29 @@ footer {
 
 .topbar p,
 footer p {
+  margin: 0.38rem 0 0;
+  color: var(--muted);
+}
+
+.badge {
+  border: 1px solid rgba(135, 200, 255, 0.55);
+  background: rgba(38, 86, 157, 0.26);
+  color: #d4ebff;
+  border-radius: 999px;
+  padding: 0.3rem 0.68rem;
+  font-size: 0.77rem;
+  white-space: nowrap;
+}
+
+.layout {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 1.4rem 2.2rem;
+  display: grid;
+  grid-template-columns: minmax(300px, 390px) 1fr;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
   margin: 0.4rem 0 0;
   color: var(--muted);
 }
@@ -49,6 +113,11 @@ footer p {
 
 .panel {
   border: 1px solid var(--panel-border);
+  background: var(--panel);
+  backdrop-filter: blur(14px);
+  border-radius: 20px;
+  padding: 1rem;
+  box-shadow: inset 0 1px 0 rgba(203, 228, 255, 0.09), 0 18px 42px rgba(0, 0, 0, 0.36);
   background: rgba(17, 26, 47, 0.95);
   border-radius: 16px;
   padding: 1rem;
@@ -57,6 +126,14 @@ footer p {
 
 .controls h2,
 .viewer h2 {
+  margin: 0;
+  font-size: 1.04rem;
+}
+
+.helper {
+  margin: 0.45rem 0 0.85rem;
+  color: var(--muted);
+  font-size: 0.84rem;
   margin: 0 0 1rem;
 }
 
@@ -65,11 +142,13 @@ footer p {
   grid-template-columns: 1fr auto;
   gap: 0.5rem;
   align-items: center;
+  margin-bottom: 0.84rem;
   margin-bottom: 0.8rem;
 }
 
 .control-group label {
   grid-column: 1 / -1;
+  font-size: 0.89rem;
   font-size: 0.92rem;
   color: var(--muted);
 }
@@ -80,6 +159,40 @@ select {
   accent-color: var(--accent);
 }
 
+select,
+button,
+.file-label {
+  font: inherit;
+}
+
+select {
+  background: rgba(5, 15, 36, 0.95);
+  color: var(--text);
+  border: 1px solid rgba(89, 126, 196, 0.85);
+  border-radius: 10px;
+  padding: 0.45rem;
+}
+
+output {
+  min-width: 3.8rem;
+  text-align: right;
+  color: #88d3ff;
+  font-variant-numeric: tabular-nums;
+}
+
+.insight {
+  margin: 0.75rem 0 0.5rem;
+  border: 1px solid rgba(113, 165, 255, 0.42);
+  border-radius: 12px;
+  background: rgba(20, 39, 72, 0.52);
+  padding: 0.65rem;
+  font-size: 0.84rem;
+  color: #d4e8ff;
+}
+
+.actions {
+  margin-top: 0.6rem;
+  display: grid;
 output {
   min-width: 3.5rem;
   text-align: right;
@@ -96,6 +209,20 @@ output {
 
 button,
 .file-label {
+  background: linear-gradient(180deg, rgba(52, 90, 158, 0.66), rgba(25, 48, 90, 0.84));
+  color: var(--text);
+  border: 1px solid rgba(106, 161, 245, 0.75);
+  border-radius: 11px;
+  padding: 0.62rem 0.85rem;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+button:hover,
+.file-label:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(13, 41, 84, 0.4);
   background: #192b4f;
   color: var(--text);
   border: 1px solid #2d4d86;
@@ -120,6 +247,18 @@ button,
 .canvas-wrap {
   margin-top: 0.8rem;
   position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(103, 157, 255, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(197, 226, 255, 0.1), 0 16px 34px rgba(2, 8, 20, 0.5);
+}
+
+.canvas-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.08), transparent 34%, transparent 67%, rgba(255, 255, 255, 0.05));
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid #244071;
@@ -141,6 +280,7 @@ canvas {
   flex-wrap: wrap;
   gap: 1rem;
   color: var(--muted);
+  font-size: 0.84rem;
   font-size: 0.85rem;
 }
 
@@ -167,5 +307,10 @@ canvas {
 @media (max-width: 980px) {
   .layout {
     grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

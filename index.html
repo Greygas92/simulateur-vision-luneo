@@ -7,6 +7,24 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div class="bg-glow"></div>
+
+    <header class="topbar">
+      <div>
+        <p class="kicker">LUNEO • Outil opticien</p>
+        <h1>Vision Progressive Lab</h1>
+        <p>Simulateur premium pour expliquer précisément les ressentis patient en magasin.</p>
+      </div>
+      <span class="badge">Session en direct</span>
+    </header>
+
+    <main class="layout">
+      <section class="panel controls" aria-label="Panneau de réglages">
+        <h2>Réglages optiques</h2>
+        <p class="helper">Astuce: commencez par “Nouveau porteur”, puis ajustez selon le ressenti patient.</p>
+
+        <div class="control-group">
+          <label for="mode">Profil</label>
     <header class="topbar">
       <h1>Vision Progressive Lab</h1>
       <p>Simulateur interactif des déformations perçues avec des verres progressifs.</p>
@@ -61,6 +79,18 @@
           <output id="headTiltValue"></output>
         </div>
 
+        <div class="control-group">
+          <label for="compare">Comparaison original ↔ simulation</label>
+          <input id="compare" type="range" min="0" max="1" step="0.01" value="1" />
+          <output id="compareValue"></output>
+        </div>
+
+        <article class="insight" id="insightBox" aria-live="polite"></article>
+
+        <div class="actions">
+          <button id="toggleGrid">Afficher / Masquer les guides</button>
+          <button id="loadDemo">Charger une scène démo</button>
+          <button id="resetPreset">Réinitialiser profil</button>
         <div class="actions">
           <button id="toggleGrid">Afficher/Masquer grille</button>
           <button id="loadDemo">Charger une scène démo</button>
@@ -72,6 +102,7 @@
       <section class="panel viewer">
         <div class="viewer-header">
           <h2>Rendu en condition réelle</h2>
+          <small>Zones arrondies, couloir progressif, et comparaison en direct pour démonstration patient.</small>
           <small>Conseil: utilisez une photo d’intérieur (rayons, escaliers, voiture) pour mieux voir les zones de déformation.</small>
         </div>
 
@@ -81,6 +112,9 @@
         </div>
 
         <div class="legend">
+          <span><i class="dot far"></i> Zone loin (arrondie)</span>
+          <span><i class="dot inter"></i> Couloir intermédiaire</span>
+          <span><i class="dot near"></i> Zone près (arrondie)</span>
           <span><i class="dot far"></i> Vision de loin</span>
           <span><i class="dot inter"></i> Vision intermédiaire</span>
           <span><i class="dot near"></i> Vision de près</span>
@@ -89,6 +123,7 @@
     </main>
 
     <footer>
+      <p>Conçu pour l’opticien: expliquer l’adaptation, rassurer le patient, et ajuster la recommandation visuelle.</p>
       <p>
         Ce simulateur est pédagogique: il reproduit les phénomènes de déformation, d’astigmatisme latéral et de changement de netteté.
       </p>
