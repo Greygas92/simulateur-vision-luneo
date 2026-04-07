@@ -11,16 +11,17 @@
 
     <header class="topbar">
       <div>
-        <p class="kicker">LUNEO • Simulation optique</p>
+        <p class="kicker">LUNEO • Outil opticien</p>
         <h1>Vision Progressive Lab</h1>
-        <p>Rendu premium des déformations perçues avec verres progressifs, en situation réelle.</p>
+        <p>Simulateur premium pour expliquer précisément les ressentis patient en magasin.</p>
       </div>
-      <span class="badge">Temps réel</span>
+      <span class="badge">Session en direct</span>
     </header>
 
     <main class="layout">
-      <section class="panel controls">
+      <section class="panel controls" aria-label="Panneau de réglages">
         <h2>Réglages optiques</h2>
+        <p class="helper">Astuce: commencez par “Nouveau porteur”, puis ajustez selon le ressenti patient.</p>
 
         <div class="control-group">
           <label for="mode">Profil</label>
@@ -67,9 +68,18 @@
           <output id="headTiltValue"></output>
         </div>
 
+        <div class="control-group">
+          <label for="compare">Comparaison original ↔ simulation</label>
+          <input id="compare" type="range" min="0" max="1" step="0.01" value="1" />
+          <output id="compareValue"></output>
+        </div>
+
+        <article class="insight" id="insightBox" aria-live="polite"></article>
+
         <div class="actions">
           <button id="toggleGrid">Afficher / Masquer les guides</button>
           <button id="loadDemo">Charger une scène démo</button>
+          <button id="resetPreset">Réinitialiser profil</button>
           <label class="file-label" for="imageUpload">Importer une image</label>
           <input id="imageUpload" type="file" accept="image/*" />
         </div>
@@ -78,7 +88,7 @@
       <section class="panel viewer">
         <div class="viewer-header">
           <h2>Rendu en condition réelle</h2>
-          <small>Les zones de netteté/flou suivent désormais une géométrie plus organique (courbes arrondies de type couloir progressif).</small>
+          <small>Zones arrondies, couloir progressif, et comparaison en direct pour démonstration patient.</small>
         </div>
 
         <div class="canvas-wrap">
@@ -95,7 +105,7 @@
     </main>
 
     <footer>
-      <p>Simulateur pédagogique premium: déformation latérale, astigmatisme périphérique et transitions de netteté progressives.</p>
+      <p>Conçu pour l’opticien: expliquer l’adaptation, rassurer le patient, et ajuster la recommandation visuelle.</p>
     </footer>
 
     <script src="app.js"></script>

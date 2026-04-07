@@ -1,9 +1,8 @@
 :root {
   color-scheme: dark;
   --bg: #050914;
-  --bg-2: #0c1830;
-  --panel: rgba(14, 23, 43, 0.8);
-  --panel-border: rgba(112, 153, 230, 0.26);
+  --panel: rgba(14, 23, 43, 0.84);
+  --panel-border: rgba(112, 153, 230, 0.28);
   --text: #edf3ff;
   --muted: #9cb3db;
   --accent: #6dc1ff;
@@ -19,14 +18,13 @@ body {
   background: radial-gradient(circle at 20% 10%, #102247, var(--bg));
   color: var(--text);
   min-height: 100vh;
-  position: relative;
 }
 
 .bg-glow {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(circle at 82% 20%, rgba(54, 127, 255, 0.22), transparent 42%), radial-gradient(circle at 14% 76%, rgba(119, 56, 255, 0.16), transparent 36%);
+  background: radial-gradient(circle at 82% 20%, rgba(54, 127, 255, 0.22), transparent 42%), radial-gradient(circle at 14% 76%, rgba(119, 56, 255, 0.15), transparent 36%);
 }
 
 .topbar,
@@ -79,7 +77,7 @@ footer p {
   margin: 0 auto;
   padding: 0 1.4rem 2.2rem;
   display: grid;
-  grid-template-columns: minmax(290px, 370px) 1fr;
+  grid-template-columns: minmax(300px, 390px) 1fr;
   gap: 1rem;
   position: relative;
   z-index: 1;
@@ -91,13 +89,19 @@ footer p {
   backdrop-filter: blur(14px);
   border-radius: 20px;
   padding: 1rem;
-  box-shadow: inset 0 1px 0 rgba(203, 228, 255, 0.08), 0 18px 42px rgba(0, 0, 0, 0.38);
+  box-shadow: inset 0 1px 0 rgba(203, 228, 255, 0.09), 0 18px 42px rgba(0, 0, 0, 0.36);
 }
 
 .controls h2,
 .viewer h2 {
-  margin: 0 0 1rem;
+  margin: 0;
   font-size: 1.04rem;
+}
+
+.helper {
+  margin: 0.45rem 0 0.85rem;
+  color: var(--muted);
+  font-size: 0.84rem;
 }
 
 .control-group {
@@ -105,7 +109,7 @@ footer p {
   grid-template-columns: 1fr auto;
   gap: 0.5rem;
   align-items: center;
-  margin-bottom: 0.86rem;
+  margin-bottom: 0.84rem;
 }
 
 .control-group label {
@@ -141,8 +145,18 @@ output {
   font-variant-numeric: tabular-nums;
 }
 
+.insight {
+  margin: 0.75rem 0 0.5rem;
+  border: 1px solid rgba(113, 165, 255, 0.42);
+  border-radius: 12px;
+  background: rgba(20, 39, 72, 0.52);
+  padding: 0.65rem;
+  font-size: 0.84rem;
+  color: #d4e8ff;
+}
+
 .actions {
-  margin-top: 1rem;
+  margin-top: 0.6rem;
   display: grid;
   gap: 0.45rem;
 }
@@ -187,7 +201,7 @@ button:hover,
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0.09), transparent 34%, transparent 67%, rgba(255, 255, 255, 0.05));
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.08), transparent 34%, transparent 67%, rgba(255, 255, 255, 0.05));
 }
 
 canvas {

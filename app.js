@@ -10,7 +10,8 @@ const controls = {
   swim: document.getElementById('swim'),
   blur: document.getElementById('blur'),
   chromatic: document.getElementById('chromatic'),
-  headTilt: document.getElementById('headTilt')
+  headTilt: document.getElementById('headTilt'),
+  compare: document.getElementById('compare')
 };
 
 const outputs = {
@@ -19,10 +20,13 @@ const outputs = {
   swim: document.getElementById('swimValue'),
   blur: document.getElementById('blurValue'),
   chromatic: document.getElementById('chromaticValue'),
-  headTilt: document.getElementById('headTiltValue')
+  headTilt: document.getElementById('headTiltValue'),
+  compare: document.getElementById('compareValue')
 };
 
+const insightBox = document.getElementById('insightBox');
 let showGrid = true;
+let renderQueued = false;
 
 function clamp(val, min, max) {
   return Math.min(max, Math.max(min, val));
@@ -44,6 +48,20 @@ function ellipseFalloff(x, y, cx, cy, rx, ry, softness = 0.18) {
   return 1 - smoothstep(1 - softness, 1 + softness, dist);
 }
 
+function updateClinicalInsight() {
+  const power = Number(controls.power.value);
+  const swim = Number(controls.swim.value);
+  const blur = Number(controls.blur.value);
+
+  if (power > 0.65 && swim > 0.55) {
+    insightBox.textContent = 'Lecture clinique : profil sensible avec adaptation probable de 7 à 15 jours. Privilégier explication sur mouvements de tête et balayage visuel.';
+  } else if (blur < 0.3 && swim < 0.35) {
+    insightBox.textContent = 'Lecture clinique : profil plutôt confortable. La transition loin/intermédiaire/près devrait être bien tolérée au quotidien.';
+  } else {
+    insightBox.textContent = 'Lecture clinique : adaptation intermédiaire. Vérifier centrage, posture, et habitudes de lecture pour optimiser le confort.';
+  }
+}
+
 function updateOutputLabels() {
   outputs.corridor.textContent = `${Math.round(lerp(8, 20, Number(controls.corridor.value)))} mm`;
   outputs.power.textContent = `+${(Number(controls.power.value) * 3).toFixed(2)} D`;
@@ -51,6 +69,8 @@ function updateOutputLabels() {
   outputs.blur.textContent = `${Math.round(Number(controls.blur.value) * 100)} %`;
   outputs.chromatic.textContent = `${Math.round(Number(controls.chromatic.value) * 100)} %`;
   outputs.headTilt.textContent = `${(Number(controls.headTilt.value) * 15).toFixed(1)}°`;
+  outputs.compare.textContent = `${Math.round(Number(controls.compare.value) * 100)} %`;
+  updateClinicalInsight();
 }
 
 function applyModePreset() {
@@ -61,16 +81,24 @@ function applyModePreset() {
     controls.swim.value = 0.68;
     controls.blur.value = 0.62;
     controls.chromatic.value = 0.36;
+    controls.headTilt.value = 0.08;
   } else if (mode === 'adapted') {
     controls.corridor.value = 0.74;
     controls.power.value = 0.46;
     controls.swim.value = 0.24;
     controls.blur.value = 0.22;
     controls.chromatic.value = 0.12;
+    controls.headTilt.value = 0;
   }
 
   updateOutputLabels();
-  render();
+  requestRender();
+}
+
+function resetProfile() {
+  controls.mode.value = 'newWearer';
+  controls.compare.value = 1;
+  applyModePreset();
 }
 
 function drawDemoScene() {
@@ -131,6 +159,8 @@ function sampleNearest(data, width, height, x, y) {
 }
 
 function render() {
+  renderQueued = false;
+
   const w = sourceCanvas.width;
   const h = sourceCanvas.height;
   const src = srcCtx.getImageData(0, 0, w, h);
@@ -145,6 +175,7 @@ function render() {
   const blur = Number(controls.blur.value);
   const chromatic = Number(controls.chromatic.value);
   const headTilt = Number(controls.headTilt.value) * 0.24;
+  const compare = Number(controls.compare.value);
 
   const cx = w * 0.5;
   const cy = h * (0.53 + headTilt * 0.12);
@@ -216,33 +247,46 @@ function render() {
       finalG *= 1 - vignette * 0.08;
       finalB *= 1 - vignette * 0.08;
 
-      d[i] = finalR;
-      d[i + 1] = finalG;
-      d[i + 2] = finalB;
-      d[i + 3] = a / count;
-
       if (showGrid) {
         const farGuide = Math.abs(Math.hypot((x - cx) / (corridorHalf * 0.95), (y - farCy) / (h * 0.22)) - 1) < 0.012;
         const nearGuide = Math.abs(Math.hypot((x - cx) / (corridorHalf * 1.08), (y - nearCy) / (h * 0.27)) - 1) < 0.012;
         const corridorGuide = Math.abs(x - cx) < corridorHalf * 0.06 && y > farCy - h * 0.03 && y < nearCy + h * 0.03;
 
         if (farGuide || nearGuide || corridorGuide) {
-          d[i] = lerp(d[i], farGuide ? 60 : nearGuide ? 255 : 255, 0.48);
-          d[i + 1] = lerp(d[i + 1], farGuide ? 220 : nearGuide ? 95 : 214, 0.48);
-          d[i + 2] = lerp(d[i + 2], farGuide ? 255 : nearGuide ? 125 : 80, 0.48);
+          finalR = lerp(finalR, farGuide ? 60 : nearGuide ? 255 : 255, 0.48);
+          finalG = lerp(finalG, farGuide ? 220 : nearGuide ? 95 : 214, 0.48);
+          finalB = lerp(finalB, farGuide ? 255 : nearGuide ? 125 : 80, 0.48);
         }
       }
+
+      d[i] = lerp(s[i], finalR, compare);
+      d[i + 1] = lerp(s[i + 1], finalG, compare);
+      d[i + 2] = lerp(s[i + 2], finalB, compare);
+      d[i + 3] = lerp(s[i + 3], a / count, compare);
     }
   }
 
   outCtx.putImageData(dst, 0, 0);
 }
 
+function requestRender() {
+  if (renderQueued) return;
+  renderQueued = true;
+  requestAnimationFrame(render);
+}
+
 function handleUpload(event) {
   const [file] = event.target.files;
   if (!file) return;
 
+  if (!file.type.startsWith('image/')) {
+    insightBox.textContent = 'Erreur : le fichier importé n’est pas une image. Veuillez choisir JPG, PNG ou WEBP.';
+    return;
+  }
+
   const img = new Image();
+  const objectUrl = URL.createObjectURL(file);
+
   img.onload = () => {
     const w = sourceCanvas.width;
     const h = sourceCanvas.height;
@@ -257,10 +301,16 @@ function handleUpload(event) {
     srcCtx.fillStyle = '#000';
     srcCtx.fillRect(0, 0, w, h);
     srcCtx.drawImage(img, dx, dy, drawW, drawH);
-    render();
+    URL.revokeObjectURL(objectUrl);
+    requestRender();
   };
 
-  img.src = URL.createObjectURL(file);
+  img.onerror = () => {
+    URL.revokeObjectURL(objectUrl);
+    insightBox.textContent = 'Erreur : impossible de lire cette image. Essayez un autre fichier.';
+  };
+
+  img.src = objectUrl;
 }
 
 Object.values(controls).forEach((control) => {
@@ -270,23 +320,29 @@ Object.values(controls).forEach((control) => {
       applyModePreset();
       return;
     }
-    controls.mode.value = 'custom';
-    render();
+
+    if (control !== controls.compare && control !== controls.mode) {
+      controls.mode.value = 'custom';
+    }
+
+    requestRender();
   });
 });
 
 document.getElementById('toggleGrid').addEventListener('click', () => {
   showGrid = !showGrid;
-  render();
+  requestRender();
 });
 
 document.getElementById('loadDemo').addEventListener('click', () => {
   drawDemoScene();
-  render();
+  requestRender();
 });
 
+document.getElementById('resetPreset').addEventListener('click', resetProfile);
 document.getElementById('imageUpload').addEventListener('change', handleUpload);
 
 updateOutputLabels();
+applyModePreset();
 drawDemoScene();
-render();
+requestRender();
