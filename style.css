@@ -6,6 +6,12 @@
   --text: #edf3ff;
   --muted: #9cb3db;
   --accent: #6dc1ff;
+  --bg: #0a0f1c;
+  --panel: #111a2f;
+  --panel-border: #1f2f52;
+  --text: #eaf1ff;
+  --muted: #a9b9dd;
+  --accent: #63b3ff;
 }
 
 * {
@@ -16,6 +22,7 @@ body {
   margin: 0;
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   background: radial-gradient(circle at 20% 10%, #102247, var(--bg));
+  background: radial-gradient(circle at 20% 10%, #0f1a34, var(--bg));
   color: var(--text);
   min-height: 100vh;
 }
@@ -54,6 +61,16 @@ footer {
 .topbar h1 {
   margin: 0.2rem 0 0;
   font-size: clamp(1.3rem, 2.2vw, 2.1rem);
+.topbar,
+footer {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: clamp(1.2rem, 2vw, 2rem);
 }
 
 .topbar p,
@@ -81,6 +98,17 @@ footer p {
   gap: 1rem;
   position: relative;
   z-index: 1;
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+}
+
+.layout {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 1.25rem 2rem;
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) 1fr;
+  gap: 1rem;
 }
 
 .panel {
@@ -90,6 +118,10 @@ footer p {
   border-radius: 20px;
   padding: 1rem;
   box-shadow: inset 0 1px 0 rgba(203, 228, 255, 0.09), 0 18px 42px rgba(0, 0, 0, 0.36);
+  background: rgba(17, 26, 47, 0.95);
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .controls h2,
@@ -102,6 +134,7 @@ footer p {
   margin: 0.45rem 0 0.85rem;
   color: var(--muted);
   font-size: 0.84rem;
+  margin: 0 0 1rem;
 }
 
 .control-group {
@@ -110,11 +143,13 @@ footer p {
   gap: 0.5rem;
   align-items: center;
   margin-bottom: 0.84rem;
+  margin-bottom: 0.8rem;
 }
 
 .control-group label {
   grid-column: 1 / -1;
   font-size: 0.89rem;
+  font-size: 0.92rem;
   color: var(--muted);
 }
 
@@ -158,6 +193,17 @@ output {
 .actions {
   margin-top: 0.6rem;
   display: grid;
+output {
+  min-width: 3.5rem;
+  text-align: right;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.actions {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 0.45rem;
 }
 
@@ -177,6 +223,17 @@ button:hover,
 .file-label:hover {
   transform: translateY(-1px);
   box-shadow: 0 10px 20px rgba(13, 41, 84, 0.4);
+  background: #192b4f;
+  color: var(--text);
+  border: 1px solid #2d4d86;
+  border-radius: 10px;
+  padding: 0.55rem 0.8rem;
+  cursor: pointer;
+  text-align: center;
+}
+
+.file-label {
+  display: inline-block;
 }
 
 #imageUpload {
@@ -202,6 +259,9 @@ button:hover,
   inset: 0;
   pointer-events: none;
   background: linear-gradient(120deg, rgba(255, 255, 255, 0.08), transparent 34%, transparent 67%, rgba(255, 255, 255, 0.05));
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #244071;
 }
 
 canvas {
@@ -221,6 +281,7 @@ canvas {
   gap: 1rem;
   color: var(--muted);
   font-size: 0.84rem;
+  font-size: 0.85rem;
 }
 
 .dot {

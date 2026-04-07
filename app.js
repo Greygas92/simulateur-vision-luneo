@@ -12,6 +12,7 @@ const controls = {
   chromatic: document.getElementById('chromatic'),
   headTilt: document.getElementById('headTilt'),
   compare: document.getElementById('compare')
+  headTilt: document.getElementById('headTilt')
 };
 
 const outputs = {
@@ -27,6 +28,10 @@ const outputs = {
 const insightBox = document.getElementById('insightBox');
 let showGrid = true;
 let renderQueued = false;
+  headTilt: document.getElementById('headTiltValue')
+};
+
+let showGrid = true;
 
 function clamp(val, min, max) {
   return Math.min(max, Math.max(min, val));
@@ -99,6 +104,21 @@ function resetProfile() {
   controls.mode.value = 'newWearer';
   controls.compare.value = 1;
   applyModePreset();
+    controls.corridor.value = 0.46;
+    controls.power.value = 0.78;
+    controls.swim.value = 0.66;
+    controls.blur.value = 0.6;
+    controls.chromatic.value = 0.34;
+  } else if (mode === 'adapted') {
+    controls.corridor.value = 0.72;
+    controls.power.value = 0.5;
+    controls.swim.value = 0.26;
+    controls.blur.value = 0.24;
+    controls.chromatic.value = 0.14;
+  }
+
+  updateOutputLabels();
+  render();
 }
 
 function drawDemoScene() {
@@ -114,6 +134,13 @@ function drawDemoScene() {
 
   srcCtx.fillStyle = '#4e6f48';
   srcCtx.fillRect(0, h * 0.65, w, h * 0.35);
+  sky.addColorStop(0, '#9dd6ff');
+  sky.addColorStop(1, '#f4f8ff');
+  srcCtx.fillStyle = sky;
+  srcCtx.fillRect(0, 0, w, h);
+
+  srcCtx.fillStyle = '#5f7f4e';
+  srcCtx.fillRect(0, h * 0.64, w, h * 0.36);
 
   for (let i = 0; i < 14; i += 1) {
     const x = 20 + i * 70;
@@ -132,6 +159,20 @@ function drawDemoScene() {
   srcCtx.lineTo(w * 0.48, h * 0.57);
   srcCtx.lineTo(w * 0.59, h * 0.57);
   srcCtx.lineTo(w * 0.51, h);
+    srcCtx.fillStyle = '#5c4631';
+    srcCtx.fillRect(x, y - 70, 10, 70);
+    srcCtx.beginPath();
+    srcCtx.arc(x + 5, y - 90, 30, 0, Math.PI * 2);
+    srcCtx.fillStyle = '#2f773b';
+    srcCtx.fill();
+  }
+
+  srcCtx.fillStyle = '#404040';
+  srcCtx.beginPath();
+  srcCtx.moveTo(w * 0.35, h);
+  srcCtx.lineTo(w * 0.48, h * 0.58);
+  srcCtx.lineTo(w * 0.58, h * 0.58);
+  srcCtx.lineTo(w * 0.5, h);
   srcCtx.closePath();
   srcCtx.fill();
 
@@ -140,6 +181,7 @@ function drawDemoScene() {
   srcCtx.beginPath();
   srcCtx.moveTo(w * 0.43, h);
   srcCtx.lineTo(w * 0.53, h * 0.57);
+  srcCtx.lineTo(w * 0.53, h * 0.58);
   srcCtx.stroke();
 
   srcCtx.fillStyle = '#0c2b57';
@@ -149,6 +191,11 @@ function drawDemoScene() {
   srcCtx.fillStyle = '#143156';
   srcCtx.font = '500 26px Inter, sans-serif';
   srcCtx.fillText('Les zones latérales montrent l’astigmatisme périphérique', 60, h - 40);
+  srcCtx.fillText('SIMULATION VISION PROGRESSIVE', 60, 70);
+
+  srcCtx.fillStyle = '#123';
+  srcCtx.font = '500 28px Inter, sans-serif';
+  srcCtx.fillText('Regardez sur les côtés de la route : distorsions latérales', 60, h - 40);
 }
 
 function sampleNearest(data, width, height, x, y) {
@@ -183,6 +230,12 @@ function render() {
   const corridorHalf = lerp(0.085, 0.22, corridor) * w;
   const nearCy = cy + h * 0.24;
   const farCy = cy - h * 0.24;
+  const headTilt = Number(controls.headTilt.value) * 0.25;
+
+  const cx = w * 0.5;
+  const cy = h * (0.54 + headTilt * 0.1);
+
+  const corridorHalf = lerp(0.08, 0.2, corridor) * w;
 
   for (let y = 0; y < h; y += 1) {
     for (let x = 0; x < w; x += 1) {
@@ -207,6 +260,19 @@ function render() {
       const blurWeight = clamp((1 - focusBlend) * (0.7 + lateralArc * 0.9), 0, 1);
       const blurRadius = Math.round(blur * (1.1 + 4.4 * blurWeight) + power * 1.3 * nearFocus + lateralArc * 1.3);
       const chromaShift = chromatic * (1 + lateralArc * 2.3) * 2.1;
+      const radial = Math.hypot(nx * 1.25, ny);
+
+      const lateral = smoothstep(corridorHalf / w, 0.48, Math.abs(nx));
+      const nearZone = smoothstep(0.08, 0.36, ny);
+      const midZone = 1 - Math.abs(ny + 0.08) * 2.1;
+      const mid = clamp(midZone, 0, 1);
+
+      const baseShift = swim * lateral * (1 + power * 0.7);
+      const warpX = x + Math.sign(nx) * baseShift * 80 * (0.35 + nearZone * 0.65) + Math.sin(y * 0.022) * 2.5 * swim;
+      const warpY = y + Math.cos(x * 0.018) * 1.5 * swim * (0.6 + radial) + nearZone * power * 16;
+
+      const blurRadius = Math.round(blur * 3.8 * lateral + power * 1.4 * nearZone);
+      const chromaShift = chromatic * lateral * 5;
 
       let r = 0;
       let g = 0;
@@ -217,6 +283,8 @@ function render() {
       for (let oy = -blurRadius; oy <= blurRadius; oy += 1) {
         for (let ox = -blurRadius; ox <= blurRadius; ox += 1) {
           if (Math.hypot(ox, oy) > blurRadius + 0.001) continue;
+          const dist = Math.hypot(ox, oy);
+          if (dist > blurRadius + 0.001) continue;
 
           const rr = sampleNearest(s, w, h, warpX + ox + chromaShift, warpY + oy);
           const gg = sampleNearest(s, w, h, warpX + ox, warpY + oy);
@@ -263,6 +331,20 @@ function render() {
       d[i + 1] = lerp(s[i + 1], finalG, compare);
       d[i + 2] = lerp(s[i + 2], finalB, compare);
       d[i + 3] = lerp(s[i + 3], a / count, compare);
+      d[i] = r / count;
+      d[i + 1] = g / count;
+      d[i + 2] = b / count;
+      d[i + 3] = a / count;
+
+      if (showGrid) {
+        const gridX = (x - cx) / corridorHalf;
+        const onGuide = (Math.abs(gridX) > 0.98 && Math.abs(gridX) < 1.03) || (Math.abs(ny - 0.07) < 0.0025) || (Math.abs(ny + 0.18) < 0.0025);
+        if (onGuide) {
+          d[i] = lerp(d[i], 255, 0.45);
+          d[i + 1] = lerp(d[i + 1], mid > nearZone ? 210 : 90, 0.45);
+          d[i + 2] = lerp(d[i + 2], nearZone > 0.5 ? 120 : 255, 0.45);
+        }
+      }
     }
   }
 
@@ -287,6 +369,7 @@ function handleUpload(event) {
   const img = new Image();
   const objectUrl = URL.createObjectURL(file);
 
+  const img = new Image();
   img.onload = () => {
     const w = sourceCanvas.width;
     const h = sourceCanvas.height;
@@ -311,6 +394,10 @@ function handleUpload(event) {
   };
 
   img.src = objectUrl;
+    render();
+  };
+
+  img.src = URL.createObjectURL(file);
 }
 
 Object.values(controls).forEach((control) => {
@@ -326,12 +413,15 @@ Object.values(controls).forEach((control) => {
     }
 
     requestRender();
+    controls.mode.value = 'custom';
+    render();
   });
 });
 
 document.getElementById('toggleGrid').addEventListener('click', () => {
   showGrid = !showGrid;
   requestRender();
+  render();
 });
 
 document.getElementById('loadDemo').addEventListener('click', () => {
@@ -346,3 +436,11 @@ updateOutputLabels();
 applyModePreset();
 drawDemoScene();
 requestRender();
+  render();
+});
+
+document.getElementById('imageUpload').addEventListener('change', handleUpload);
+
+updateOutputLabels();
+drawDemoScene();
+render();

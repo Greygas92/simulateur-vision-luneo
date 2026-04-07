@@ -25,6 +25,17 @@
 
         <div class="control-group">
           <label for="mode">Profil</label>
+    <header class="topbar">
+      <h1>Vision Progressive Lab</h1>
+      <p>Simulateur interactif des déformations perçues avec des verres progressifs.</p>
+    </header>
+
+    <main class="layout">
+      <section class="panel controls">
+        <h2>Réglages</h2>
+
+        <div class="control-group">
+          <label for="mode">Mode de simulation</label>
           <select id="mode">
             <option value="newWearer">Nouveau porteur (adaptation difficile)</option>
             <option value="adapted">Porteur adapté</option>
@@ -80,6 +91,9 @@
           <button id="toggleGrid">Afficher / Masquer les guides</button>
           <button id="loadDemo">Charger une scène démo</button>
           <button id="resetPreset">Réinitialiser profil</button>
+        <div class="actions">
+          <button id="toggleGrid">Afficher/Masquer grille</button>
+          <button id="loadDemo">Charger une scène démo</button>
           <label class="file-label" for="imageUpload">Importer une image</label>
           <input id="imageUpload" type="file" accept="image/*" />
         </div>
@@ -89,6 +103,7 @@
         <div class="viewer-header">
           <h2>Rendu en condition réelle</h2>
           <small>Zones arrondies, couloir progressif, et comparaison en direct pour démonstration patient.</small>
+          <small>Conseil: utilisez une photo d’intérieur (rayons, escaliers, voiture) pour mieux voir les zones de déformation.</small>
         </div>
 
         <div class="canvas-wrap">
@@ -100,12 +115,18 @@
           <span><i class="dot far"></i> Zone loin (arrondie)</span>
           <span><i class="dot inter"></i> Couloir intermédiaire</span>
           <span><i class="dot near"></i> Zone près (arrondie)</span>
+          <span><i class="dot far"></i> Vision de loin</span>
+          <span><i class="dot inter"></i> Vision intermédiaire</span>
+          <span><i class="dot near"></i> Vision de près</span>
         </div>
       </section>
     </main>
 
     <footer>
       <p>Conçu pour l’opticien: expliquer l’adaptation, rassurer le patient, et ajuster la recommandation visuelle.</p>
+      <p>
+        Ce simulateur est pédagogique: il reproduit les phénomènes de déformation, d’astigmatisme latéral et de changement de netteté.
+      </p>
     </footer>
 
     <script src="app.js"></script>
